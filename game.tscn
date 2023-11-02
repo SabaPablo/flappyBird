@@ -1,0 +1,96 @@
+[gd_scene load_steps=12 format=3 uid="uid://c7t4h5aot533b"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_b8qrv"]
+[ext_resource type="PackedScene" uid="uid://cgcq15i7ljh6l" path="res://player.tscn" id="1_kuyb3"]
+[ext_resource type="Script" path="res://ParallaxBackground.gd" id="2_ddnf4"]
+[ext_resource type="Texture2D" uid="uid://5u66futhhbq4" path="res://flappy-bird-assets/sprites/background-day.png" id="3_m0x5p"]
+[ext_resource type="Texture2D" uid="uid://bp8ylueanynyk" path="res://flappy-bird-assets/sprites/base.png" id="4_va0kg"]
+[ext_resource type="FontFile" uid="uid://npefoxuc8g1y" path="res://flappy-bird-assets/Flappy-Bird.ttf" id="6_2kmgd"]
+[ext_resource type="Texture2D" uid="uid://bn83we6gmhhvu" path="res://flappy-bird-assets/sprites/message.png" id="7_g3r48"]
+[ext_resource type="Script" path="res://Message.gd" id="8_6578y"]
+[ext_resource type="Texture2D" uid="uid://de3hegqvsvx7t" path="res://flappy-bird-assets/sprites/gameover.png" id="9_6hk5p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_leqcs"]
+size = Vector2(588, 153)
+
+[sub_resource type="LabelSettings" id="LabelSettings_adq01"]
+font = ExtResource("6_2kmgd")
+font_size = 100
+font_color = Color(0.0235294, 0.0235294, 0.0235294, 1)
+outline_size = 10
+shadow_color = Color(0.301961, 0.290196, 0.129412, 0)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_b8qrv")
+
+[node name="ObstacleTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="Player" parent="." instance=ExtResource("1_kuyb3")]
+position = Vector2(153, 208)
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource("2_ddnf4")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(288, 2.08165e-12)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
+position = Vector2(187, 292)
+scale = Vector2(1.27257, 1.27257)
+texture = ExtResource("3_m0x5p")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(336, 2.08165e-12)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(181.375, 609)
+scale = Vector2(1.09896, 1.17857)
+texture = ExtResource("4_va0kg")
+
+[node name="Suelo" type="StaticBody2D" parent="." groups=["Obstaculo"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Suelo"]
+position = Vector2(280, 616)
+rotation = -3.14159
+shape = SubResource("RectangleShape2D_leqcs")
+
+[node name="ScoreLabel" type="Label" parent="."]
+z_index = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 58.0
+offset_top = 16.0
+offset_right = 190.0
+offset_bottom = 126.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_adq01")
+
+[node name="Techo" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Techo"]
+position = Vector2(290, -72)
+rotation = -3.14159
+shape = SubResource("RectangleShape2D_leqcs")
+
+[node name="Message" type="Sprite2D" parent="."]
+process_mode = 3
+visible = false
+z_index = 2
+z_as_relative = false
+position = Vector2(181, 362)
+texture = ExtResource("7_g3r48")
+script = ExtResource("8_6578y")
+
+[node name="Gameover" type="Sprite2D" parent="Message"]
+visible = false
+position = Vector2(-8, -222)
+texture = ExtResource("9_6hk5p")
+
+[connection signal="timeout" from="ObstacleTimer" to="." method="_on_obstacle_timer_timeout"]

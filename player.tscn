@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://cgcq15i7ljh6l"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_1833q"]
+[ext_resource type="Texture2D" uid="uid://bppghcu6oluql" path="res://flappy-bird-assets/sprites/redbird-midflap.png" id="1_fig8h"]
+[ext_resource type="Texture2D" uid="uid://bt5lyaq5cllrd" path="res://flappy-bird-assets/sprites/redbird-downflap.png" id="2_dnlny"]
+[ext_resource type="Texture2D" uid="uid://dskyb3qc7eeiw" path="res://flappy-bird-assets/sprites/redbird-upflap.png" id="3_dpqh0"]
+[ext_resource type="AudioStream" uid="uid://db7ft3swf1num" path="res://flappy-bird-assets/audio/hit.ogg" id="5_t2g5w"]
+[ext_resource type="AudioStream" uid="uid://df0cmeeewfwuk" path="res://flappy-bird-assets/audio/point.ogg" id="6_mtcog"]
+[ext_resource type="AudioStream" uid="uid://56hqn8cjc6pt" path="res://flappy-bird-assets/audio/wing.ogg" id="7_4c7xt"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iw3t8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_fig8h")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_dnlny")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_fig8h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_dpqh0")
+}],
+"loop": false,
+"name": &"flap",
+"speed": 15.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uvgmi"]
+radius = 13.0384
+
+[node name="Player" type="RigidBody2D" groups=["Player"]]
+position = Vector2(2.08165e-12, 2.08165e-12)
+script = ExtResource("1_1833q")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_iw3t8")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uvgmi")
+
+[node name="FloorDetected" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorDetected"]
+shape = SubResource("CircleShape2D_uvgmi")
+
+[node name="HitAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("5_t2g5w")
+
+[node name="PointAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("6_mtcog")
+
+[node name="FlapAudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("7_4c7xt")
+
+[connection signal="body_entered" from="FloorDetected" to="." method="_on_floor_detected_body_entered"]
